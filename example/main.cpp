@@ -16,21 +16,14 @@ int main(void) {
 
   std::vector<pqrs::cf_ptr<CFDictionaryRef>> matching_dictionaries;
 
-  if (auto matching_dictionary = IOServiceMatching(kIOHIDDeviceKey)) {
-    if (auto number = pqrs::make_cf_number(static_cast<int32_t>(kHIDPage_GenericDesktop))) {
-      CFDictionarySetValue(matching_dictionary,
-                           CFSTR(kIOHIDDeviceUsagePageKey),
-                           *number);
-    }
-    if (auto number = pqrs::make_cf_number(static_cast<int32_t>(kHIDUsage_GD_Keyboard))) {
-      CFDictionarySetValue(matching_dictionary,
-                           CFSTR(kIOHIDDeviceUsageKey),
-                           *number);
-    }
-    matching_dictionaries.emplace_back(matching_dictionary);
+  matching_dictionaries.push_back(
+      pqrs::osx::iokit_hid_manager::make_matching_dictionary(
+          pqrs::osx::iokit_hid_usage_page_generic_desktop,
+          pqrs::osx::iokit_hid_usage_generic_desktop_keyboard));
 
-    CFRelease(matching_dictionary);
-  }
+  matching_dictionaries.push_back(
+      pqrs::osx::iokit_hid_manager::make_matching_dictionary(
+          pqrs::osx::iokit_hid_usage_page_apple_vendor));
 
   auto hid_manager = std::make_unique<pqrs::osx::iokit_hid_manager>(pqrs::dispatcher::extra::get_shared_dispatcher(),
                                                                     matching_dictionaries);

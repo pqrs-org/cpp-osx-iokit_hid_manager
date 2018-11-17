@@ -44,6 +44,48 @@ public:
     });
   }
 
+  static cf_ptr<CFDictionaryRef> make_matching_dictionary(iokit_hid_usage_page hid_usage_page,
+                                                          iokit_hid_usage hid_usage) {
+    cf_ptr<CFDictionaryRef> result;
+
+    if (auto matching_dictionary = IOServiceMatching(kIOHIDDeviceKey)) {
+      if (auto number = pqrs::make_cf_number(type_safe::get(hid_usage_page))) {
+        CFDictionarySetValue(matching_dictionary,
+                             CFSTR(kIOHIDDeviceUsagePageKey),
+                             *number);
+      }
+      if (auto number = pqrs::make_cf_number(type_safe::get(hid_usage))) {
+        CFDictionarySetValue(matching_dictionary,
+                             CFSTR(kIOHIDDeviceUsageKey),
+                             *number);
+      }
+
+      result = matching_dictionary;
+
+      CFRelease(matching_dictionary);
+    }
+
+    return result;
+  }
+
+  static cf_ptr<CFDictionaryRef> make_matching_dictionary(iokit_hid_usage_page hid_usage_page) {
+    cf_ptr<CFDictionaryRef> result;
+
+    if (auto matching_dictionary = IOServiceMatching(kIOHIDDeviceKey)) {
+      if (auto number = pqrs::make_cf_number(type_safe::get(hid_usage_page))) {
+        CFDictionarySetValue(matching_dictionary,
+                             CFSTR(kIOHIDDeviceUsagePageKey),
+                             *number);
+      }
+
+      result = matching_dictionary;
+
+      CFRelease(matching_dictionary);
+    }
+
+    return result;
+  }
+
 private:
   // This method is executed in the dispatcher thread.
   void start(void) {
