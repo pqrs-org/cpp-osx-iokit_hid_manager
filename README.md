@@ -9,6 +9,7 @@ A reliable alternative of IOHIDManager.
 
 cpp-osx-iokit_hid_manager depends the following classes.
 
+- [pqrs::cf_number](https://github.com/pqrs-org/cpp-cf_number)
 - [pqrs::osx::iokit_service_monitor](https://github.com/pqrs-org/cpp-osx-iokit_service_monitor)
 
 ## Install

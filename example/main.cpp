@@ -1,6 +1,5 @@
 #include <IOKit/hid/IOHIDUsageTables.h>
 #include <csignal>
-#include <pqrs/cf_number.hpp>
 #include <pqrs/osx/iokit_hid_manager.hpp>
 
 namespace {

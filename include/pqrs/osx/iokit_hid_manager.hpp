@@ -9,6 +9,7 @@
 // `pqrs::osx::iokit_hid_manager` can be used safely in a multi-threaded environment.
 
 #include <IOKit/hid/IOHIDDevice.h>
+#include <pqrs/cf_number.hpp>
 #include <pqrs/osx/iokit_service_monitor.hpp>
 #include <unordered_map>
 #include <vector>
