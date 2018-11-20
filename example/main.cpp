@@ -27,12 +27,12 @@ int main(void) {
   auto hid_manager = std::make_unique<pqrs::osx::iokit_hid_manager>(pqrs::dispatcher::extra::get_shared_dispatcher(),
                                                                     matching_dictionaries);
 
-  hid_manager->device_detected.connect([](auto&& registry_entry_id, auto&& device_ptr) {
-    std::cout << "device_detected registry_entry_id:" << registry_entry_id << std::endl;
+  hid_manager->device_matched.connect([](auto&& registry_entry_id, auto&& device_ptr) {
+    std::cout << "device_matched registry_entry_id:" << registry_entry_id << std::endl;
   });
 
-  hid_manager->device_removed.connect([](auto&& registry_entry_id) {
-    std::cout << "device_remove registry_entry_id:" << registry_entry_id << std::endl;
+  hid_manager->device_terminated.connect([](auto&& registry_entry_id) {
+    std::cout << "device_terminated registry_entry_id:" << registry_entry_id << std::endl;
   });
 
   hid_manager->error_occurred.connect([](auto&& message, auto&& iokit_return) {
