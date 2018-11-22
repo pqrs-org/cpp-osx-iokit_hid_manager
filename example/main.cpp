@@ -13,16 +13,21 @@ int main(void) {
     global_wait->notify();
   });
 
-  std::vector<pqrs::cf_ptr<CFDictionaryRef>> matching_dictionaries;
-
-  matching_dictionaries.push_back(
+  std::vector<pqrs::cf_ptr<CFDictionaryRef>> matching_dictionaries{
       pqrs::osx::iokit_hid_manager::make_matching_dictionary(
           pqrs::osx::iokit_hid_usage_page_generic_desktop,
-          pqrs::osx::iokit_hid_usage_generic_desktop_keyboard));
+          pqrs::osx::iokit_hid_usage_generic_desktop_keyboard),
 
-  matching_dictionaries.push_back(
       pqrs::osx::iokit_hid_manager::make_matching_dictionary(
-          pqrs::osx::iokit_hid_usage_page_apple_vendor));
+          pqrs::osx::iokit_hid_usage_page_generic_desktop,
+          pqrs::osx::iokit_hid_usage_generic_desktop_mouse),
+
+      pqrs::osx::iokit_hid_manager::make_matching_dictionary(
+          pqrs::osx::iokit_hid_usage_page_generic_desktop,
+          pqrs::osx::iokit_hid_usage_generic_desktop_pointer),
+
+      pqrs::osx::iokit_hid_manager::make_matching_dictionary(
+          pqrs::osx::iokit_hid_usage_page_apple_vendor)};
 
   auto hid_manager = std::make_unique<pqrs::osx::iokit_hid_manager>(pqrs::dispatcher::extra::get_shared_dispatcher(),
                                                                     matching_dictionaries);
