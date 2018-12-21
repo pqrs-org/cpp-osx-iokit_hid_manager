@@ -15,7 +15,7 @@ TEST_CASE("iokit_hid_manager stress testing") {
       std::cout << "." << std::flush;
     }
 
-    std::vector<pqrs::cf_ptr<CFDictionaryRef>> matching_dictionaries;
+    std::vector<pqrs::cf::cf_ptr<CFDictionaryRef>> matching_dictionaries;
 
     auto matching_dictionary = IOServiceMatching(kIOHIDDeviceKey);
     REQUIRE(matching_dictionary);
