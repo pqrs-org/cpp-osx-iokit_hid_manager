@@ -7,11 +7,12 @@ auto global_wait = pqrs::make_thread_wait();
 }
 
 int main(void) {
-  pqrs::dispatcher::extra::initialize_shared_dispatcher();
-
   std::signal(SIGINT, [](int) {
     global_wait->notify();
   });
+
+  auto time_source = std::make_shared<pqrs::dispatcher::hardware_time_source>();
+  auto dispatcher = std::make_shared<pqrs::dispatcher::dispatcher>(time_source);
 
   std::vector<pqrs::cf::cf_ptr<CFDictionaryRef>> matching_dictionaries{
       pqrs::osx::iokit_hid_manager::make_matching_dictionary(
@@ -29,7 +30,7 @@ int main(void) {
       pqrs::osx::iokit_hid_manager::make_matching_dictionary(
           pqrs::osx::iokit_hid_usage_page_apple_vendor)};
 
-  auto hid_manager = std::make_unique<pqrs::osx::iokit_hid_manager>(pqrs::dispatcher::extra::get_shared_dispatcher(),
+  auto hid_manager = std::make_unique<pqrs::osx::iokit_hid_manager>(dispatcher,
                                                                     matching_dictionaries);
 
   hid_manager->device_matched.connect([](auto&& registry_entry_id, auto&& device_ptr) {
@@ -54,7 +55,8 @@ int main(void) {
 
   hid_manager = nullptr;
 
-  pqrs::dispatcher::extra::terminate_shared_dispatcher();
+  dispatcher->terminate();
+  dispatcher = nullptr;
 
   std::cout << "finished" << std::endl;
 
