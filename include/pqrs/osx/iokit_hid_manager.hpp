@@ -18,7 +18,7 @@ namespace pqrs {
 namespace osx {
 class iokit_hid_manager final : public dispatcher::extra::dispatcher_client {
 public:
-  // Signals (invoked from the shared dispatcher thread)
+  // Signals (invoked from the dispatcher thread)
 
   nod::signal<void(iokit_registry_entry_id, cf::cf_ptr<IOHIDDeviceRef>)> device_matched;
   nod::signal<void(iokit_registry_entry_id)> device_terminated;
