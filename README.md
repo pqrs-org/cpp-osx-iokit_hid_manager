@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/pqrs-org/cpp-osx-iokit_hid_manager.svg?branch=master)](https://travis-ci.org/pqrs-org/cpp-osx-iokit_hid_manager)
+[![Build Status](https://travis-ci.com/pqrs-org/cpp-osx-iokit_hid_manager.svg?branch=master)](https://travis-ci.com/pqrs-org/cpp-osx-iokit_hid_manager)
 [![License](https://img.shields.io/badge/license-Boost%20Software%20License-blue.svg)](https://github.com/pqrs-org/cpp-osx-iokit_hid_manager/blob/master/LICENSE.md)
 
 # cpp-osx-iokit_hid_manager
