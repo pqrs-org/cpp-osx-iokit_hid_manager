@@ -31,7 +31,8 @@ int main(void) {
           pqrs::osx::iokit_hid_usage_page_apple_vendor)};
 
   auto hid_manager = std::make_unique<pqrs::osx::iokit_hid_manager>(dispatcher,
-                                                                    matching_dictionaries);
+                                                                    matching_dictionaries,
+                                                                    std::chrono::milliseconds(1000));
 
   hid_manager->device_matched.connect([](auto&& registry_entry_id, auto&& device_ptr) {
     std::cout << "device_matched registry_entry_id:" << registry_entry_id << std::endl;
