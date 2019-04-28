@@ -47,6 +47,12 @@ public:
     });
   }
 
+  void async_rescan(void) {
+    enqueue_to_dispatcher([this] {
+      rescan();
+    });
+  }
+
   static cf::cf_ptr<CFDictionaryRef> make_matching_dictionary(iokit_hid_usage_page hid_usage_page,
                                                               iokit_hid_usage hid_usage) {
     cf::cf_ptr<CFDictionaryRef> result;
@@ -161,6 +167,12 @@ private:
     service_monitors_.clear();
     devices_.clear();
     device_matched_called_ids_.clear();
+  }
+
+  void rescan(void) {
+    for (const auto& m : service_monitors_) {
+      m->async_invoke_service_matched();
+    }
   }
 
   std::vector<cf::cf_ptr<CFDictionaryRef>> matching_dictionaries_;

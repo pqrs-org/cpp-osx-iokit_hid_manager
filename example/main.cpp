@@ -4,7 +4,29 @@
 
 namespace {
 auto global_wait = pqrs::make_thread_wait();
-}
+
+class rescan_timer : public pqrs::dispatcher::extra::dispatcher_client {
+public:
+  rescan_timer(std::weak_ptr<pqrs::dispatcher::dispatcher> weak_dispatcher,
+               std::shared_ptr<pqrs::osx::iokit_hid_manager> hid_manager) : dispatcher_client(weak_dispatcher),
+                                                                            timer_(*this) {
+    timer_.start(
+        [hid_manager] {
+          hid_manager->async_rescan();
+        },
+        std::chrono::milliseconds(2000));
+  }
+
+  ~rescan_timer(void) {
+    detach_from_dispatcher([this] {
+      timer_.stop();
+    });
+  }
+
+private:
+  pqrs::dispatcher::extra::timer timer_;
+};
+} // namespace
 
 int main(void) {
   std::signal(SIGINT, [](int) {
@@ -30,7 +52,7 @@ int main(void) {
       pqrs::osx::iokit_hid_manager::make_matching_dictionary(
           pqrs::osx::iokit_hid_usage_page_apple_vendor)};
 
-  auto hid_manager = std::make_unique<pqrs::osx::iokit_hid_manager>(dispatcher,
+  auto hid_manager = std::make_shared<pqrs::osx::iokit_hid_manager>(dispatcher,
                                                                     matching_dictionaries,
                                                                     std::chrono::milliseconds(1000));
 
@@ -48,12 +70,16 @@ int main(void) {
 
   hid_manager->async_start();
 
+  auto timer = std::make_unique<rescan_timer>(dispatcher,
+                                              hid_manager);
+
   // ============================================================
 
   global_wait->wait_notice();
 
   // ============================================================
 
+  timer = nullptr;
   hid_manager = nullptr;
 
   dispatcher->terminate();
