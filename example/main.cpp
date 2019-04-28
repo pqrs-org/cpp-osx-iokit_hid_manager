@@ -51,7 +51,8 @@ int main(void) {
           pqrs::osx::iokit_hid_usage_generic_desktop_pointer),
 
       pqrs::osx::iokit_hid_manager::make_matching_dictionary(
-          pqrs::osx::iokit_hid_usage_page_apple_vendor)};
+          pqrs::osx::iokit_hid_usage_page_apple_vendor),
+  };
 
   auto hid_manager = std::make_shared<pqrs::osx::iokit_hid_manager>(dispatcher,
                                                                     matching_dictionaries,
