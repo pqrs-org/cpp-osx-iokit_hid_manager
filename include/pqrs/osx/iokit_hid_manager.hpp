@@ -1,6 +1,6 @@
 #pragma once
 
-// pqrs::iokit_hid_manager v2.4
+// pqrs::iokit_hid_manager v2.5
 
 // (C) Copyright Takayama Fumihiko 2018.
 // Distributed under the Boost Software License, Version 1.0.
@@ -105,6 +105,7 @@ private:
 
         monitor->service_matched.connect([this](auto&& registry_entry_id, auto&& service_ptr) {
           if (devices_.find(registry_entry_id) == std::end(devices_)) {
+
             if (auto device = IOHIDDeviceCreate(kCFAllocatorDefault, *service_ptr)) {
               auto device_ptr = cf::cf_ptr<IOHIDDeviceRef>(device);
               devices_[registry_entry_id] = device_ptr;
