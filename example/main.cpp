@@ -1,5 +1,6 @@
 #include <IOKit/hid/IOHIDUsageTables.h>
 #include <csignal>
+#include <pqrs/osx/iokit_hid_device.hpp>
 #include <pqrs/osx/iokit_hid_manager.hpp>
 
 namespace {
@@ -58,6 +59,18 @@ int main(void) {
 
   hid_manager->device_matched.connect([](auto&& registry_entry_id, auto&& device_ptr) {
     std::cout << "device_matched registry_entry_id:" << registry_entry_id << std::endl;
+
+    if (device_ptr) {
+      pqrs::osx::iokit_hid_device d(*device_ptr);
+
+      if (auto manufacturer = d.find_manufacturer()) {
+        std::cout << "  manufacturer: " << *manufacturer << std::endl;
+      }
+
+      if (auto product = d.find_product()) {
+        std::cout << "  product: " << *product << std::endl;
+      }
+    }
   });
 
   hid_manager->device_terminated.connect([](auto&& registry_entry_id) {
