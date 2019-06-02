@@ -84,6 +84,8 @@ int main(void) {
 
   hid_manager->async_start();
 
+  // hid_manager->async_set_device_matched_delay(std::chrono::milliseconds(5000));
+
   auto timer = std::make_unique<rescan_timer>(dispatcher,
                                               hid_manager);
 

@@ -53,6 +53,12 @@ public:
     });
   }
 
+  void async_set_device_matched_delay(pqrs::dispatcher::duration value) {
+    enqueue_to_dispatcher([this, value] {
+      device_matched_delay_ = value;
+    });
+  }
+
   static cf::cf_ptr<CFDictionaryRef> make_matching_dictionary(iokit_hid_usage_page hid_usage_page,
                                                               iokit_hid_usage hid_usage) {
     cf::cf_ptr<CFDictionaryRef> result;
