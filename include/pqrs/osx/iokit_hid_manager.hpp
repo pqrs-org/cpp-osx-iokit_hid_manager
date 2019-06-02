@@ -47,6 +47,12 @@ public:
     });
   }
 
+  void async_stop(void) {
+    enqueue_to_dispatcher([this] {
+      stop();
+    });
+  }
+
   void async_rescan(void) {
     enqueue_to_dispatcher([this] {
       rescan();
@@ -104,6 +110,11 @@ public:
 private:
   // This method is executed in the dispatcher thread.
   void start(void) {
+    if (!service_monitors_.empty()) {
+      // already started
+      return;
+    }
+
     for (const auto& matching_dictionary : matching_dictionaries_) {
       if (matching_dictionary) {
         auto monitor = std::make_shared<iokit_service_monitor>(weak_dispatcher_,
@@ -111,7 +122,6 @@ private:
 
         monitor->service_matched.connect([this](auto&& registry_entry_id, auto&& service_ptr) {
           if (devices_.find(registry_entry_id) == std::end(devices_)) {
-
             if (auto device = IOHIDDeviceCreate(kCFAllocatorDefault, *service_ptr)) {
               auto device_ptr = cf::cf_ptr<IOHIDDeviceRef>(device);
               devices_[registry_entry_id] = device_ptr;
@@ -184,7 +194,6 @@ private:
 
   std::vector<cf::cf_ptr<CFDictionaryRef>> matching_dictionaries_;
   pqrs::dispatcher::duration device_matched_delay_;
-
   std::vector<std::shared_ptr<iokit_service_monitor>> service_monitors_;
   std::unordered_map<iokit_registry_entry_id, cf::cf_ptr<IOHIDDeviceRef>> devices_;
   std::unordered_set<iokit_registry_entry_id> device_matched_called_ids_;
