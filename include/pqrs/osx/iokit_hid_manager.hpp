@@ -22,7 +22,7 @@ public:
 
   nod::signal<void(iokit_registry_entry_id, cf::cf_ptr<IOHIDDeviceRef>)> device_matched;
   nod::signal<void(iokit_registry_entry_id)> device_terminated;
-  nod::signal<void(const std::string&, iokit_return)> error_occurred;
+  nod::signal<void(const std::string&, kern_return)> error_occurred;
 
   // Methods
 

@@ -78,8 +78,8 @@ int main(void) {
     std::cout << "device_terminated registry_entry_id:" << registry_entry_id << std::endl;
   });
 
-  hid_manager->error_occurred.connect([](auto&& message, auto&& iokit_return) {
-    std::cerr << "error_occurred " << message << " " << iokit_return << std::endl;
+  hid_manager->error_occurred.connect([](auto&& message, auto&& kern_return) {
+    std::cerr << "error_occurred " << message << " " << kern_return << std::endl;
   });
 
   hid_manager->async_start();
