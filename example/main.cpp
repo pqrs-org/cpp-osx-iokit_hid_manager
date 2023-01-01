@@ -36,6 +36,7 @@ int main(void) {
 
   auto time_source = std::make_shared<pqrs::dispatcher::hardware_time_source>();
   auto dispatcher = std::make_shared<pqrs::dispatcher::dispatcher>(time_source);
+  auto run_loop_thread = std::make_shared<pqrs::cf::run_loop_thread>();
 
   std::vector<pqrs::cf::cf_ptr<CFDictionaryRef>> matching_dictionaries{
       pqrs::osx::iokit_hid_manager::make_matching_dictionary(
@@ -55,6 +56,7 @@ int main(void) {
   };
 
   auto hid_manager = std::make_shared<pqrs::osx::iokit_hid_manager>(dispatcher,
+                                                                    run_loop_thread,
                                                                     matching_dictionaries,
                                                                     std::chrono::milliseconds(1000));
 
@@ -97,6 +99,9 @@ int main(void) {
 
   timer = nullptr;
   hid_manager = nullptr;
+
+  run_loop_thread->terminate();
+  run_loop_thread = nullptr;
 
   dispatcher->terminate();
   dispatcher = nullptr;

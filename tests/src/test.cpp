@@ -8,6 +8,7 @@ int main(void) {
   "iokit_hid_manager stress testing"_test = [] {
     auto time_source = std::make_shared<pqrs::dispatcher::hardware_time_source>();
     auto dispatcher = std::make_shared<pqrs::dispatcher::dispatcher>(time_source);
+    auto run_loop_thread = std::make_shared<pqrs::cf::run_loop_thread>();
 
     auto object_id = pqrs::dispatcher::make_new_object_id();
     dispatcher->attach(object_id);
@@ -25,6 +26,7 @@ int main(void) {
       CFRelease(matching_dictionary);
 
       auto hid_manager = std::make_unique<pqrs::osx::iokit_hid_manager>(dispatcher,
+                                                                        run_loop_thread,
                                                                         matching_dictionaries);
 
       hid_manager->device_matched.connect([](auto&& registry_entry_id, auto&& device_ptr) {
@@ -69,6 +71,9 @@ int main(void) {
     std::cout << std::endl;
 
     dispatcher->detach(object_id);
+
+    run_loop_thread->terminate();
+    run_loop_thread = nullptr;
 
     dispatcher->terminate();
     dispatcher = nullptr;
