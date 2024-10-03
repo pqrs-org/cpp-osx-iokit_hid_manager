@@ -5,29 +5,7 @@
 
 namespace {
 auto global_wait = pqrs::make_thread_wait();
-
-class rescan_timer : public pqrs::dispatcher::extra::dispatcher_client {
-public:
-  rescan_timer(std::weak_ptr<pqrs::dispatcher::dispatcher> weak_dispatcher,
-               std::shared_ptr<pqrs::osx::iokit_hid_manager> hid_manager) : dispatcher_client(weak_dispatcher),
-                                                                            timer_(*this) {
-    timer_.start(
-        [hid_manager] {
-          hid_manager->async_rescan();
-        },
-        std::chrono::milliseconds(2000));
-  }
-
-  ~rescan_timer(void) {
-    detach_from_dispatcher([this] {
-      timer_.stop();
-    });
-  }
-
-private:
-  pqrs::dispatcher::extra::timer timer_;
-};
-} // namespace
+}
 
 int main(void) {
   std::signal(SIGINT, [](int) {
@@ -88,16 +66,12 @@ int main(void) {
 
   // hid_manager->async_set_device_matched_delay(std::chrono::milliseconds(5000));
 
-  auto timer = std::make_unique<rescan_timer>(dispatcher,
-                                              hid_manager);
-
   // ============================================================
 
   global_wait->wait_notice();
 
   // ============================================================
 
-  timer = nullptr;
   hid_manager = nullptr;
 
   run_loop_thread->terminate();
