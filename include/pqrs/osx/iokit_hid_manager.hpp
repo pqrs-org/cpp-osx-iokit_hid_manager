@@ -57,12 +57,6 @@ public:
     });
   }
 
-  void async_rescan(void) {
-    enqueue_to_dispatcher([this] {
-      rescan();
-    });
-  }
-
   void async_set_device_matched_delay(pqrs::dispatcher::duration value) {
     enqueue_to_dispatcher([this, value] {
       device_matched_delay_ = value;
@@ -189,12 +183,6 @@ private:
     service_monitors_.clear();
     devices_.clear();
     device_matched_called_ids_.clear();
-  }
-
-  void rescan(void) {
-    for (const auto& m : service_monitors_) {
-      m->async_invoke_service_matched();
-    }
   }
 
   std::shared_ptr<cf::run_loop_thread> run_loop_thread_;
