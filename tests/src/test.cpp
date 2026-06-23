@@ -1,7 +1,7 @@
 #include <boost/ut.hpp>
 #include <pqrs/osx/iokit_hid_manager.hpp>
 
-int main(void) {
+int main() {
   using namespace boost::ut;
   using namespace boost::ut::literals;
 
@@ -20,10 +20,9 @@ int main(void) {
 
       std::vector<pqrs::cf::cf_ptr<CFDictionaryRef>> matching_dictionaries;
 
-      auto matching_dictionary = IOServiceMatching(kIOHIDDeviceKey);
+      auto matching_dictionary = pqrs::cf::adopt_cf_ptr(static_cast<CFDictionaryRef>(IOServiceMatching(kIOHIDDeviceKey)));
       expect(matching_dictionary);
       matching_dictionaries.emplace_back(matching_dictionary);
-      CFRelease(matching_dictionary);
 
       auto hid_manager = std::make_unique<pqrs::osx::iokit_hid_manager>(dispatcher,
                                                                         run_loop_thread,
