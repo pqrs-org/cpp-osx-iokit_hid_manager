@@ -19,6 +19,10 @@
 
 namespace pqrs::osx {
 class iokit_hid_manager final : public dispatcher::extra::dispatcher_client {
+private:
+  // Keep the guard first so member initialization failures also detach.
+  pqrs::dispatcher::extra::dispatcher_client_constructor_exception_guard dispatcher_client_constructor_exception_guard_{*this};
+
 public:
   // Signals (invoked from the dispatcher thread)
 
@@ -38,6 +42,7 @@ public:
         run_loop_thread_(run_loop_thread),
         matching_dictionaries_(matching_dictionaries),
         device_matched_delay_(device_matched_delay) {
+    dispatcher_client_constructor_exception_guard_.initialize();
   }
 
   ~iokit_hid_manager() override {
