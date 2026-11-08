@@ -13,6 +13,7 @@ include("${CMAKE_CURRENT_LIST_DIR}/cpm-cmake-package-lock/cmake/dependency.cmake
 
 copy_vendor_package(pqrs_cf_number)
 copy_vendor_package(pqrs_hid)
+copy_vendor_package(pqrs_osx_autorelease_pool)
 copy_vendor_package(pqrs_osx_iokit_hid_device)
 copy_vendor_package(pqrs_osx_iokit_service_monitor)
 copy_vendor_package(ut)
